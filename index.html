@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Agenda Online · Camila Velásquez Fonoaudióloga</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --purple:#7c3aed;--purple-dark:#5b21b6;--purple-light:#f5f3ff;--purple-mid:#ede9fe;
+  --teal:#14b8a6;--teal-light:#f0fdfa;
+  --green:#10b981;--red:#ef4444;--orange:#f59e0b;
+  --gray:#6b7280;--text:#1e293b;--border:#e2e8f0;
+  --white:#fff;--light:#f8fafc;
+  --shadow:0 4px 24px rgba(124,58,237,.1);
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--light);color:var(--text);min-height:100vh}
+
+/* TOPBAR */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-logo{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;border:2px solid var(--purple);cursor:pointer;box-shadow:0 2px 8px rgba(124,58,237,.18)}
+.topbar-logo img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.topbar-name{font-size:0.95rem;font-weight:800;color:var(--text)}
+.topbar-sub{font-size:0.72rem;color:var(--gray)}
+.topbar-ig{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:white;padding:6px 12px;border-radius:20px;text-decoration:none;font-size:0.75rem;font-weight:700}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--purple-dark),var(--purple),#a78bfa);color:white;padding:40px 20px 36px;text-align:center}
+.hero h1{font-size:1.6rem;font-weight:900;margin-bottom:6px;line-height:1.2}
+.hero h2{font-size:0.95rem;font-weight:400;opacity:.9;margin-bottom:16px}
+.hero-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.hero-chip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;font-size:0.75rem;font-weight:600}
+.hero-contact{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+.hero-contact a{color:rgba(255,255,255,.9);text-decoration:none;font-size:0.78rem;display:flex;align-items:center;gap:4px}
+
+/* DIAGNÓSTICOS */
+.diag-bar{background:var(--white);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:8px;overflow-x:auto;flex-wrap:wrap}
+.diag-label{font-size:0.72rem;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.diag-chip{background:var(--purple-mid);color:var(--purple-dark);padding:4px 12px;border-radius:16px;font-size:0.73rem;font-weight:700;white-space:nowrap;border:1px solid #c4b5fd}
+
+/* MAIN */
+.main{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+
+/* TABS */
+.tabs{display:flex;background:var(--white);border-radius:12px;padding:4px;box-shadow:0 1px 8px rgba(0,0,0,.07);margin-bottom:20px;gap:4px}
+.tab-btn{flex:1;padding:10px;border:none;background:none;border-radius:8px;cursor:pointer;font-size:0.84rem;font-weight:700;color:var(--gray);transition:all .15s}
+.tab-btn.active{background:var(--purple);color:white;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CARDS */
+.card{background:var(--white);border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.card-title{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card-title .icon{font-size:1.15rem}
+
+/* BOOKING STEPS */
+.booking-steps{display:flex;align-items:center;margin-bottom:20px;background:var(--white);border-radius:12px;padding:12px 16px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.bstep{display:flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:700;color:#94a3b8;flex:1}
+.bstep.active{color:var(--purple)}
+.bstep.done{color:var(--green)}
+.bstep-num{width:24px;height:24px;border-radius:50%;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:900;flex-shrink:0}
+.bstep.active .bstep-num{background:var(--purple);color:white}
+.bstep.done .bstep-num{background:var(--green);color:white}
+.bstep-line{height:2px;background:var(--border);flex:1;margin:0 4px;max-width:36px}
+.bstep-line.done{background:var(--green)}
+.step-page{display:none}
+.step-page.active{display:block}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:0.77rem;font-weight:700;color:#475569}
+.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:0.87rem;font-family:inherit;transition:border-color .15s;background:white;color:var(--text)}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--purple)}
+.form-group textarea{resize:vertical;min-height:76px}
+.form-group .hint{font-size:0.71rem;color:var(--gray)}
+.required-star{color:var(--red)}
+
+/* CALENDAR */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.cal-header h3{font-size:0.95rem;font-weight:700;text-transform:capitalize}
+.cal-nav{background:none;border:1.5px solid var(--border);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:0.95rem;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.cal-nav:hover{border-color:var(--purple);color:var(--purple)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-day-name{text-align:center;font-size:0.68rem;font-weight:800;color:var(--gray);padding:5px 0;text-transform:uppercase}
+.cal-day{text-align:center;padding:7px 3px;border-radius:8px;font-size:0.82rem;cursor:pointer;transition:all .15s;min-height:32px;display:flex;align-items:center;justify-content:center}
+.cal-day:hover:not(.disabled):not(.empty){background:var(--purple-light);color:var(--purple)}
+.cal-day.selected{background:var(--purple);color:white;font-weight:700}
+.cal-day.today{font-weight:800;color:var(--purple)}
+.cal-day.disabled{color:#cbd5e1;cursor:not-allowed}
+.cal-day.empty{cursor:default}
+.cal-day.has-slots::after{content:'';width:5px;height:5px;background:var(--teal);border-radius:50%;position:absolute;bottom:2px;left:50%;transform:translateX(-50%)}
+.cal-day{position:relative}
+
+/* SLOTS */
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:7px;margin-top:10px}
+.slot{padding:9px 8px;border:1.5px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-size:0.82rem;font-weight:700;transition:all .15s}
+.slot-type{display:block;font-size:0.68rem;font-weight:700;color:var(--gray);margin-top:3px}
+.slot.selected .slot-type{color:rgba(255,255,255,.88)}
+.slot:hover{border-color:var(--purple);background:var(--purple-light);color:var(--purple)}
+.slot.selected{background:var(--purple);border-color:var(--purple);color:white}
+.slot.taken{background:#f1f5f9;color:#cbd5e1;cursor:not-allowed;font-weight:400}
+.slots-placeholder{text-align:center;padding:20px;color:var(--gray);font-size:0.85rem}
+
+/* DOMICILIO */
+.domicilio-option{border:1.5px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.domicilio-option.selected{border-color:var(--teal);background:var(--teal-light)}
+.domicilio-option input[type=radio]{accent-color:var(--teal)}
+
+/* TEST */
+.test-domain{margin-bottom:20px}
+.test-domain-header{font-size:0.77rem;font-weight:900;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;border-left:3px solid var(--purple);padding:5px 0 5px 10px;margin-bottom:10px;background:rgba(124,58,237,.05);border-radius:0 6px 6px 0}
+.test-q{margin-bottom:12px}
+.test-q .q-text{font-size:0.83rem;font-weight:600;color:var(--text);margin-bottom:7px}
+.test-q .q-opts{display:flex;flex-direction:column;gap:5px}
+.q-opt{display:flex;align-items:center;gap:8px;padding:8px 12px;background:white;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:0.80rem;transition:all .15s}
+.q-opt:hover{border-color:var(--purple);background:var(--purple-light)}
+.q-opt.selected{border-color:var(--purple);background:var(--purple-light);font-weight:700}
+.q-opt input[type=radio]{accent-color:var(--purple)}
+.test-result-box{background:white;border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-top:14px}
+.result-domain-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f3f4f6}
+
+/* BUTTONS */
+.btn-primary{background:var(--purple);color:white;border:none;padding:13px 24px;border-radius:10px;font-size:0.88rem;font-weight:800;cursor:pointer;width:100%;transition:all .15s;margin-top:12px}
+.btn-primary:hover{background:var(--purple-dark)}
+.btn-primary:disabled{background:#c4b5fd;cursor:not-allowed}
+.btn-secondary{background:none;color:var(--gray);border:1.5px solid var(--border);padding:11px 20px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all .15s;margin-top:8px}
+.btn-secondary:hover{border-color:var(--purple);color:var(--purple)}
+.btn-row{display:flex;gap:10px;margin-top:14px}
+.btn-row .btn-secondary{flex:1}
+.btn-row .btn-primary{flex:2}
+
+/* SUCCESS */
+.success-screen{text-align:center;padding:10px 0}
+.success-icon{font-size:3.5rem;margin-bottom:14px}
+.success-screen h2{font-size:1.3rem;font-weight:900;color:var(--text);margin-bottom:8px}
+.success-details{background:var(--purple-light);border-radius:12px;padding:14px;margin:16px 0;text-align:left}
+.sd-row{display:flex;gap:10px;font-size:0.82rem;padding:5px 0;border-bottom:1px solid #e9d5ff}
+.sd-row:last-child{border-bottom:none}
+.notice{background:#fef9c3;border:1px solid #fef08a;color:#854d0e;border-radius:8px;padding:8px 12px;font-size:0.78rem;margin-top:8px;display:none}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;display:inline-block;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ABOUT SECTION */
+.about-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.about-card{background:var(--purple-light);border-radius:12px;padding:14px;border:1px solid #c4b5fd;text-align:center}
+.about-card .icon{font-size:1.5rem;margin-bottom:6px}
+.about-card .title{font-size:0.78rem;font-weight:800;color:var(--purple-dark);margin-bottom:4px}
+.about-card .desc{font-size:0.72rem;color:var(--gray)}
+.about-profile{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:start}
+.about-photo{width:180px;aspect-ratio:3/4;border-radius:14px;object-fit:cover;object-position:center top;border:1px solid #ddd6fe;box-shadow:0 6px 18px rgba(30,41,59,.12)}
+.about-copy{min-width:0}
+.course-list{display:grid;gap:10px}
+.course-item{padding:12px 14px;border:1px solid #ddd6fe;border-radius:10px;background:#faf8ff}
+.course-title{font-size:0.82rem;font-weight:800;color:var(--text);margin-bottom:4px}
+.course-meta{font-size:0.75rem;color:var(--gray);line-height:1.4}
+
+/* ADMIN PANEL */
+.admin-section{background:var(--white);border-radius:16px;padding:22px;margin-bottom:18px;border:2px dashed #c4b5fd}
+.admin-pin-form{max-width:280px;margin:0 auto;text-align:center}
+.admin-pin-form input{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:8px;font-size:1rem;text-align:center;letter-spacing:4px;margin:10px 0}
+.admin-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px}
+.admin-slot{padding:8px;border:1.5px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-size:0.8rem;font-weight:700;transition:all .15s;background:white}
+.admin-slot.available{border-color:var(--green);background:#f0fdf4;color:#15803d}
+.admin-slot.blocked{border-color:var(--border);background:#f8fafc;color:#94a3b8}
+.admin-slot:hover{border-color:var(--purple)}
+
+/* FOOTER */
+.footer{background:var(--purple-dark);color:white;padding:28px 20px;text-align:center;margin-top:20px}
+.footer-grid{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
+.footer-item{display:flex;align-items:center;gap:6px;font-size:0.8rem;opacity:.9}
+.footer-item a{color:rgba(255,255,255,.9);text-decoration:none}
+.footer-copy{font-size:0.72rem;opacity:.6;margin-top:10px}
+.cita-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:white;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;flex-wrap:wrap}
+.cita-row.asistio{border-color:#86efac;background:#f0fdf4}
+.cita-row.noshow{border-color:#fca5a5;background:#fef2f2}
+.cita-time{font-size:0.88rem;font-weight:800;color:var(--purple);min-width:52px}
+.cita-info{flex:1;font-size:0.8rem}
+.cita-name{font-weight:700;color:var(--text)}
+.cita-motivo{color:var(--gray);font-size:0.74rem}
+.btn-asistio{padding:5px 10px;border:none;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;background:#dcfce7;color:#15803d;transition:all .15s}
+.btn-asistio:hover,.btn-asistio.active{background:#16a34a;color:white}
+.btn-noshow{padding:5px 10px;border:none;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;background:#fee2e2;color:#dc2626;transition:all .15s}
+.btn-noshow:hover,.btn-noshow.active{background:#dc2626;color:white}
+.stat-box{background:white;border-radius:12px;padding:14px;text-align:center;border:1.5px solid var(--border)}
+.stat-box .stat-n{font-size:1.8rem;font-weight:900;line-height:1}
+.stat-box .stat-l{font-size:0.72rem;color:var(--gray);margin-top:4px;font-weight:600}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .form-grid{grid-template-columns:1fr}
+  .form-group.full{grid-column:1}
+  .about-profile{grid-template-columns:1fr}
+  .about-photo{width:min(220px,100%);margin:0 auto}
+  .about-grid{grid-template-columns:1fr}
+  .hero h1{font-size:1.3rem}
+  .hero-chips{gap:6px}
+  .booking-steps{padding:10px 8px}
+  .bstep-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo" id="secret-logo" onclick="secretClick()"><img src="tia-camila-logo.jpg" alt="Tía Camila"></div>
+    <div>
+      <div class="topbar-name">Camila Velásquez</div>
+      <div class="topbar-sub">Fonoaudióloga · Punta Arenas</div>
+    </div>
+  </div>
+  <a href="https://instagram.com/flga.camilavelasquez" target="_blank" class="topbar-ig">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="white" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="5" stroke="white" stroke-width="2" fill="none"/><circle cx="17.5" cy="6.5" r="1.5" fill="white"/></svg>
+    @flga.camilavelasquez
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Atención Fonoaudiológica<br>Infanto-Juvenil</h1>
+  <div class="hero-chips">
+    <span class="hero-chip">📍 Justo de la Rivera #049, Pta. Arenas</span>
+    <span class="hero-chip">🏠 Atención a domicilio +$3.000</span>
+    <span class="hero-chip">🎓 Licenciada UMAG</span>
+  </div>
+  <div class="hero-contact">
+    <a href="https://wa.me/56998983553">📱 +56 9 9898 3553</a>
+    <a href="mailto:fonoaudiologa.camivlz@gmail.com">✉️ fonoaudiologa.camivlz@gmail.com</a>
+  </div>
+</div>
+
+<!-- DIAGNÓSTICOS -->
+<div class="diag-bar">
+  <span class="diag-label">Atiende:</span>
+  <span class="diag-chip">Hablantes Tardíos</span>
+  <span class="diag-chip">Trastorno del Lenguaje</span>
+  <span class="diag-chip">Trastorno de los Sonidos del Habla (TSH)</span>
+  <span class="diag-chip">Lectoescritura</span>
+  <span class="diag-chip">Fonología</span>
+  <span class="diag-chip">Trastorno del Espectro Autista (TEA)</span>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('agenda',this)">📅 Reservar Hora</button>
+    <button class="tab-btn" onclick="showTab('test',this)">🧠 Test de Evaluación</button>
+    <button class="tab-btn" onclick="showTab('info',this)">ℹ️ Sobre Camila</button>
+  </div>
+
+  <!-- ===== TAB AGENDA ===== -->
+  <div id="tab-agenda" class="tab-content active">
+
+    <!-- Stepper -->
+    <div class="booking-steps">
+      <div class="bstep active" id="bs1"><div class="bstep-num">1</div><span class="bstep-label">Datos</span></div>
+      <div class="bstep-line" id="bl1"></div>
+      <div class="bstep" id="bs2"><div class="bstep-num">2</div><span class="bstep-label">Fecha y hora</span></div>
+      <div class="bstep-line" id="bl2"></div>
+      <div class="bstep" id="bs3"><div class="bstep-num">3</div><span class="bstep-label">Confirmar</span></div>
+    </div>
+
+    <!-- STEP 1: DATOS PACIENTE -->
+    <div class="step-page active" id="sp1">
+      <div class="card">
+        <div class="card-title"><span class="icon">👤</span> Datos del paciente</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nombre <span class="required-star">*</span></label>
+            <input type="text" id="f-nombre" placeholder="Ej: Lucas" oninput="checkStep1()"/>
+          </div>
+          <div class="form-group">
+            <label>Apellido <span class="required-star">*</span></label>
+            <input type="text" id="f-apellido" placeholder="Ej: González" oninput="checkStep1()"/>
+          </div>
+          <div class="form-group">
+            <label>Edad del paciente <span class="required-star">*</span></label>
+            <input type="text" id="f-edad" placeholder="Ej: 5 años" oninput="checkStep1()"/>
+          </div>
+          <div class="form-group">
+            <label>Celular / WhatsApp <span class="required-star">*</span></label>
+            <input type="tel" id="f-celular" placeholder="+56 9 1234 5678" oninput="checkStep1()"/>
+            <span class="hint">Con código de país: +56912345678</span>
+          </div>
+          <div class="form-group">
+            <label>Email <span class="required-star">*</span></label>
+            <input type="email" id="f-email" placeholder="correo@ejemplo.com" oninput="checkStep1()"/>
+            <span class="hint">Recibirás la confirmación aquí</span>
+          </div>
+          <div class="form-group">
+            <label>¿Quién completa este formulario?</label>
+            <select id="f-relacion">
+              <option value="madre">Mamá del paciente</option>
+              <option value="padre">Papá del paciente</option>
+              <option value="apoderado">Apoderado/a</option>
+              <option value="paciente">El mismo paciente</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Motivo de consulta <span class="required-star">*</span></label>
+            <select id="f-motivo" onchange="checkStep1()">
+              <option value="">— Seleccionar motivo —</option>
+              <optgroup label="🗣️ Habla y Articulación">
+                <option value="Retraso del habla / Hablante tardío">Retraso del habla / Hablante tardío</option>
+                <option value="Trastorno de los Sonidos del Habla (TSH) - Articulación">Trastorno de los Sonidos del Habla (TSH)</option>
+                <option value="Trastorno Fonológico">Trastorno Fonológico</option>
+                <option value="Disfluencia / Tartamudez">Disfluencia / Tartamudez</option>
+              </optgroup>
+              <optgroup label="📚 Lenguaje">
+                <option value="Trastorno del Lenguaje">Trastorno del Lenguaje</option>
+                <option value="Dificultades en Lectura y Escritura / Dislexia">Dificultades en Lectura y Escritura / Dislexia</option>
+                <option value="Comprensión del Lenguaje">Dificultades en Comprensión del Lenguaje</option>
+                <option value="Vocabulario reducido para la edad">Vocabulario reducido para la edad</option>
+              </optgroup>
+              <optgroup label="🧩 Neurodesarrollo">
+                <option value="Trastorno del Espectro Autista (TEA) - comunicación">TEA – área de comunicación y lenguaje</option>
+                <option value="Síndrome de Down - intervención del lenguaje">Síndrome de Down – intervención lenguaje</option>
+              </optgroup>
+              <optgroup label="✅ Preventivo">
+                <option value="Evaluación fonoaudiológica preventiva">Evaluación preventiva del lenguaje</option>
+                <option value="Control y seguimiento fonoaudiológico">Control y seguimiento fonoaudiológico</option>
+                <option value="Orientación a padres / cuidadores">Orientación a padres / cuidadores</option>
+              </optgroup>
+              <option value="Otro (especificar)">Otro (indicar en comentarios)</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Tipo de atención</label>
+            <div style="display:flex;gap:10px;margin-top:4px">
+              <div class="domicilio-option selected" id="tipo-consulta" onclick="setTipo('consulta')">
+                <input type="radio" name="tipo" value="consulta" checked/>
+                <div>
+                  <div style="font-size:0.82rem;font-weight:700">🏥 Consulta en el local</div>
+                  <div style="font-size:0.72rem;color:var(--gray)">Justo de la Rivera #049</div>
+                </div>
+              </div>
+              <div class="domicilio-option" id="tipo-domicilio" onclick="setTipo('domicilio')">
+                <input type="radio" name="tipo" value="domicilio"/>
+                <div>
+                  <div style="font-size:0.82rem;font-weight:700">🏠 Atención a domicilio</div>
+                  <div style="font-size:0.72rem;color:var(--gray)">+$3.000 adicional</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group full" id="campo-direccion" style="display:none">
+            <label>Dirección de atención a domicilio <span class="required-star">*</span></label>
+            <input type="text" id="f-direccion" placeholder="Ej: Calle Los Pinos #123, Punta Arenas" oninput="checkStep1()"/>
+          </div>
+          <div class="form-group full">
+            <label>Comentarios adicionales</label>
+            <textarea id="f-comentario" placeholder="Describe brevemente la situación del paciente o cualquier información que quieras compartir con Camila..."></textarea>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-paso1" disabled onclick="goBookStep(2)">Seleccionar fecha y hora →</button>
+    </div>
+
+    <!-- STEP 2: FECHA Y HORA -->
+    <div class="step-page" id="sp2">
+      <div class="card">
+        <div class="card-title"><span class="icon">📅</span> Elegir fecha</div>
+        <div class="cal-header">
+          <button class="cal-nav" onclick="prevMonth()">‹</button>
+          <h3 id="cal-title"></h3>
+          <button class="cal-nav" onclick="nextMonth()">›</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <div class="card" id="slots-card" style="display:none">
+        <div class="card-title"><span class="icon">🕐</span> Horarios disponibles — <span id="slots-date-label" style="font-weight:400;color:var(--gray);font-size:0.88rem"></span></div>
+        <div id="slots-container"><div class="slots-placeholder">Seleccioná una fecha para ver los horarios disponibles.</div></div>
+        <p id="no-admin-slots" style="display:none;font-size:0.78rem;color:var(--orange);margin-top:8px;padding:8px;background:#fffbeb;border-radius:8px;border:1px solid #fde68a">⚠️ Camila no ha habilitado horarios para este día. Intenta con otra fecha.</p>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goBookStep(1)">← Volver</button>
+        <button class="btn-primary" id="btn-paso2" disabled onclick="goBookStep(3)" style="margin-top:0">Confirmar reserva →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: CONFIRMACIÓN -->
+    <div class="step-page" id="sp3">
+      <div class="card">
+        <div class="card-title"><span class="icon">✅</span> Confirmar tu reserva</div>
+        <div class="success-details" id="confirm-summary" style="background:var(--purple-light)"></div>
+        <p style="font-size:0.78rem;color:var(--gray);margin-top:10px">Al confirmar, recibirás un <strong>email de confirmación</strong> con los detalles de tu reserva.</p>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goBookStep(2)">← Cambiar hora</button>
+        <button class="btn-primary" id="btn-confirmar" onclick="submitBooking()" style="margin-top:0">✅ Confirmar reserva</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: ÉXITO -->
+    <div class="step-page" id="sp4">
+      <div class="card">
+        <div class="success-screen">
+          <div class="success-icon">🎉</div>
+          <h2>¡Reserva confirmada! 🎉</h2>
+          <p style="color:var(--gray);font-size:0.88rem;margin-bottom:14px">Te enviamos un email de confirmación. Revisa tu bandeja de entrada (y carpeta de spam).</p>
+          <div class="success-details" id="success-details"></div>
+          <p style="font-size:0.78rem;color:var(--gray);margin-top:12px">¿Necesitás cancelar o reagendar? Escríbele a Camila por WhatsApp: <a href="https://wa.me/56998983553" style="color:var(--purple)">+56 9 9898 3553</a></p>
+        </div>
+        <button class="btn-secondary" onclick="startOver()" style="max-width:300px;margin:16px auto 0">Hacer otra reserva</button>
+      </div>
+    </div>
+
+  </div><!-- /tab-agenda -->
+
+  <!-- ===== TAB TEST ===== -->
+  <div id="tab-test" class="tab-content">
+    <div class="card">
+      <div class="card-title"><span class="icon">🧠</span> Test de Evaluación del Lenguaje</div>
+      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:16px">Este cuestionario ayuda a detectar áreas que podrían requerir evaluación fonoaudiológica. Responde según el comportamiento habitual de tu hijo/a (o en primera persona si es para un adulto). El resultado es inmediato y orientativo.</p>
+      <div class="card" style="background:var(--purple-light);border:1px solid #c4b5fd;padding:12px;margin-bottom:12px">
+        <p style="font-size:0.78rem;color:var(--purple-dark);font-weight:700">⚠️ Este test NO reemplaza la evaluación clínica. Es una orientación preliminar que Camila utilizará en la consulta.</p>
+      </div>
+      <div id="test-questions-v2"></div>
+      <div id="test-result-v2" style="display:none"></div>
+      <button class="btn-primary" id="btn-ver-resultado" disabled onclick="showFullResult()" style="margin-top:14px">Ver resultado completo</button>
+    </div>
+  </div>
+
+  <!-- ===== TAB INFO ===== -->
+  <div id="tab-info" class="tab-content">
+    <div class="card">
+      <div class="about-profile">
+        <img class="about-photo" src="camila-retrato.jpg" alt="Camila Velásquez Asencio">
+        <div class="about-copy">
+          <div class="card-title"><span class="icon">👩‍⚕️</span> Camila Velásquez Asencio</div>
+          <p style="font-size:0.86rem;color:var(--gray);margin-bottom:18px">Fonoaudióloga egresada de la Universidad de Magallanes (UMAG). Especializada en evaluación, diagnóstico e intervención en trastornos de la comunicación y lenguaje en niños/as.</p>
+          <div class="about-grid">
+            <div class="about-card">
+              <div class="icon">🏥</div>
+              <div class="title">Consulta</div>
+              <div class="desc">Justo de la Rivera #049<br>Punta Arenas</div>
+            </div>
+            <div class="about-card">
+              <div class="icon">🏠</div>
+              <div class="title">Domicilio</div>
+              <div class="desc">Atención en el hogar<br>+$3.000 adicional</div>
+            </div>
+            <div class="about-card">
+              <div class="icon">🎓</div>
+              <div class="title">Formación</div>
+              <div class="desc">Licenciada en Fonoaudiología<br>UMAG</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📚</span> Cursos y Diplomados</div>
+      <div class="course-list">
+        <div class="course-item">
+          <div class="course-title">Rol del fonoaudiólogo/a en PIE</div>
+          <div class="course-meta">16 al 18 de enero de 2023 · 12 horas cronológicas · E-learning · Certificado por INCAPNOVA LTDA.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Integración sensorial y fonoaudiología</div>
+          <div class="course-meta">Abril a junio de 2023 · 21 horas pedagógicas · E-learning · Certificado de participación otorgado por ABINES.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Rol del fonoaudiólogo en Escuelas de Lenguaje</div>
+          <div class="course-meta">19 y 20 de abril de 2023 · 10 horas cronológicas · E-learning · Certificado por INCAPNOVA LTDA.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Abordaje de la conciencia fonológica como precursora de la lectoescritura</div>
+          <div class="course-meta">17 al 20 de julio de 2023 · 20 horas pedagógicas · E-learning · Certificado por INCAPNOVA LTDA.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Fonoaudiología y vía aérea artificial: TQT y post extubación</div>
+          <div class="course-meta">50 horas · Neuromav · 2025.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Instrumento de diagnóstico para los trastornos específicos del lenguaje en edad escolar (IDTEL)</div>
+          <div class="course-meta">Universidad de Valparaíso · 2025.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Diplomado en inclusión y diversidad</div>
+          <div class="course-meta">Estrategias de gestión para una educación transformadora · abril a junio de 2025 · Universidad Playa Ancha.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Prevención de incendios y uso de extintores</div>
+          <div class="course-meta">Instituto de Seguridad Laboral · 2025.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Neurodiversidad y TEA</div>
+          <div class="course-meta">Fundación Methodo · 2025.</div>
+        </div>
+        <div class="course-item">
+          <div class="course-title">Guía de diagnóstico y apoyos tempranos en el Espectro Autista</div>
+          <div class="course-meta">Academia Senadis · 2025.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📋</span> Diagnósticos que atiende</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span class="diag-chip">🗣️ Hablantes Tardíos</span>
+        <span class="diag-chip">📚 Trastorno del Lenguaje</span>
+        <span class="diag-chip">🔤 Trastorno de los Sonidos del Habla (TSH)</span>
+        <span class="diag-chip">🔠 Trastorno Fonológico</span>
+        <span class="diag-chip">📖 Lectoescritura / Dislexia</span>
+        <span class="diag-chip">🧩 Trastorno del Espectro Autista (TEA)</span>
+        <span class="diag-chip">✅ Evaluación Preventiva</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📞</span> Contacto</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <a href="https://wa.me/56998983553" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);padding:10px;background:#f0fdf4;border-radius:8px;border:1px solid #bbf7d0">
+          <span style="font-size:1.3rem">📱</span>
+          <div><div style="font-size:0.82rem;font-weight:700">WhatsApp</div><div style="font-size:0.78rem;color:var(--gray)">+56 9 9898 3553</div></div>
+        </a>
+        <a href="mailto:fonoaudiologa.camivlz@gmail.com" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);padding:10px;background:var(--purple-light);border-radius:8px;border:1px solid #c4b5fd">
+          <span style="font-size:1.3rem">✉️</span>
+          <div><div style="font-size:0.82rem;font-weight:700">Email</div><div style="font-size:0.78rem;color:var(--gray)">fonoaudiologa.camivlz@gmail.com</div></div>
+        </a>
+        <a href="https://instagram.com/flga.camilavelasquez" target="_blank" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);padding:10px;background:linear-gradient(135deg,#fdf2f8,#fef3c7);border-radius:8px;border:1px solid #f9a8d4">
+          <span style="font-size:1.3rem">📸</span>
+          <div><div style="font-size:0.82rem;font-weight:700">Instagram</div><div style="font-size:0.78rem;color:var(--gray)">@flga.camilavelasquez</div></div>
+        </a>
+        <div style="display:flex;align-items:center;gap:10px;padding:10px;background:#fff7ed;border-radius:8px;border:1px solid #fed7aa">
+          <span style="font-size:1.3rem">📍</span>
+          <div><div style="font-size:0.82rem;font-weight:700">Ubicación</div><div style="font-size:0.78rem;color:var(--gray)">Justo de la Rivera #049, Punta Arenas</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ADMIN PANEL (hidden, PIN protected) -->
+<div id="admin-wrapper" style="display:none">
+  <div class="main" style="padding-top:0">
+    <div class="admin-section">
+      <div class="card-title">🔐 Panel de Administración — Camila</div>
+      <div id="admin-pin-section">
+        <div class="admin-pin-form">
+          <p style="font-size:0.82rem;color:var(--gray);margin-bottom:8px">Ingresa tu PIN de administradora</p>
+          <input type="password" id="admin-pin-input" placeholder="••••••" maxlength="10" oninput="checkPin()"/>
+          <button class="btn-primary" id="btn-admin-login" disabled onclick="adminLogin()" style="font-size:0.85rem;padding:10px">Entrar al panel →</button>
+          <p id="admin-pin-error" style="color:var(--red);font-size:0.75rem;margin-top:6px;display:none">PIN incorrecto</p>
+        </div>
+      </div>
+      <div id="admin-panel" style="display:none">
+        <p style="font-size:0.8rem;color:var(--gray);margin-bottom:14px">Seleccioná una fecha para habilitar o bloquear horarios disponibles para las reservas.</p>
+        <div class="cal-header">
+          <button class="cal-nav" onclick="adminPrevMonth()">‹</button>
+          <h3 id="admin-cal-title"></h3>
+          <button class="cal-nav" onclick="adminNextMonth()">›</button>
+        </div>
+        <div class="cal-grid" id="admin-cal-grid"></div>
+        <div id="admin-slots-section" style="display:none;margin-top:16px">
+          <div style="font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:8px">⏰ Horarios para <span id="admin-date-label"></span> <span style="font-size:0.72rem;font-weight:400;color:var(--gray)">(clic para habilitar/bloquear)</span></div>
+          <div class="admin-slot-grid" id="admin-slot-grid"></div>
+          <button class="btn-primary" id="btn-save-slots" onclick="saveAdminSlots()" style="margin-top:12px;font-size:0.85rem;padding:10px">💾 Guardar disponibilidad</button>
+          <p id="admin-save-msg" style="display:none;font-size:0.78rem;color:var(--green);margin-top:6px">✅ Horarios guardados correctamente</p>
+
+          <!-- CITAS DEL DÍA -->
+          <div id="admin-citas-section" style="margin-top:20px;display:none">
+            <div style="font-size:0.85rem;font-weight:800;color:var(--purple);margin-bottom:10px;padding-top:14px;border-top:1px solid var(--border)">
+              👥 Citas agendadas para ese día
+            </div>
+            <div id="admin-citas-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMEN MENSUAL -->
+      <div id="admin-resumen" style="display:none;margin-top:20px;border-top:2px solid var(--border);padding-top:18px">
+        <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:14px">📊 Resumen últimos 30 días</div>
+        <div id="admin-stats-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px"></div>
+        <div id="admin-stats-list" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-item">📍 Justo de la Rivera #049, Punta Arenas</div>
+    <div class="footer-item">🏠 Domicilio · +$3.000</div>
+    <div class="footer-item"><a href="https://wa.me/56998983553">📱 +56 9 9898 3553</a></div>
+    <div class="footer-item"><a href="https://instagram.com/flga.camilavelasquez">📸 @flga.camilavelasquez</a></div>
+  </div>
+  <div style="font-size:0.78rem;opacity:.7;margin-bottom:8px">Camila Velásquez Asencio · Fonoaudióloga · Licenciada UMAG</div>
+  <div class="footer-copy">© 2025 · Camila Velásquez Fonoaudióloga</div>
+</footer>
+
+<script>
+// =================== HORARIO FIJO (45 min por sesión) ===================
+const SCHEDULE = {
+  1: [
+    {time:'15:30', tipo:'domicilio'},
+    {time:'16:30', tipo:'domicilio'},
+    {time:'17:30', tipo:'domicilio'}
+  ],                                                      // Lunes
+  2: [
+    {time:'17:30', tipo:'domicilio'}
+  ],                                                      // Martes
+  3: [
+    {time:'17:30', tipo:'domicilio'}
+  ],                                                      // Miércoles
+  4: [
+    {time:'17:30', tipo:'domicilio'}
+  ],                                                      // Jueves
+  5: [],                                                  // Viernes ocupado
+  // 6: Sábado cerrado
+  // 0: Domingo cerrado
+};
+
+// =================== CONFIG ===================
+const ADMIN_PIN = 'camila2024';
+const NOTIFY_EMAIL = 'camilavelasquez415@gmail.com';
+
+// --- EmailJS (https://www.emailjs.com) ---
+// Reemplaza estos 3 valores con los de tu cuenta EmailJS
+const EJS_PUBLIC_KEY    = '0g_0-0_CmJlmGep0v';
+const EJS_SERVICE_ID    = 'service_gas6iwq';
+const EJS_TEMPLATE_CLIENTE = 'template_cieelws';  // confirmación al paciente
+const EJS_TEMPLATE_CAMILA  = 'template_re50fm4';  // aviso a Camila
+// -----------------------------------------
+(function(){ if(typeof emailjs !== 'undefined') emailjs.init({ publicKey: EJS_PUBLIC_KEY }); })();
+
+// =================== STATE ===================
+const STATE = {
+  date: null, time: null, tipo: 'consulta',
+  calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
+  adminYear: new Date().getFullYear(), adminMonth: new Date().getMonth(),
+  adminDate: null, adminSlots: {}, submitting: false,
+  testResult: null,
+  testReportSent: false
+};
+
+// =================== TABS ===================
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active');
+    });
+  }
+}
+
+// =================== BOOKING STEPS ===================
+function goBookStep(n) {
+  document.querySelectorAll('.step-page').forEach(p => p.classList.remove('active'));
+  document.getElementById('sp' + n).classList.add('active');
+  for (let i = 1; i <= 4; i++) {
+    const bs = document.getElementById('bs' + i);
+    const bl = document.getElementById('bl' + i);
+    if (!bs) continue;
+    bs.classList.remove('active', 'done');
+    if (i < n) bs.classList.add('done');
+    else if (i === n) bs.classList.add('active');
+    if (bl) bl.classList.toggle('done', i < n);
+  }
+  window.scrollTo({top: 120, behavior: 'smooth'});
+  if (n === 2) renderCalendar();
+  if (n === 3) renderConfirmSummary();
+}
+
+// =================== FORM STEP 1 ===================
+function setTipo(t) {
+  STATE.tipo = t;
+  document.getElementById('tipo-consulta').classList.toggle('selected', t === 'consulta');
+  document.getElementById('tipo-domicilio').classList.toggle('selected', t === 'domicilio');
+  document.querySelector('#tipo-consulta input').checked = t === 'consulta';
+  document.querySelector('#tipo-domicilio input').checked = t === 'domicilio';
+  document.getElementById('campo-direccion').style.display = t === 'domicilio' ? 'block' : 'none';
+  checkStep1();
+}
+
+function checkStep1() {
+  const n = document.getElementById('f-nombre').value.trim();
+  const a = document.getElementById('f-apellido').value.trim();
+  const e = document.getElementById('f-edad').value.trim();
+  const c = document.getElementById('f-celular').value.trim();
+  const em = document.getElementById('f-email').value.trim();
+  const m = document.getElementById('f-motivo').value;
+  const d = STATE.tipo === 'domicilio' ? document.getElementById('f-direccion').value.trim() : 'ok';
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+  document.getElementById('btn-paso1').disabled = !(n && a && e && c.length > 7 && validEmail && m && d);
+}
+
+// =================== CALENDAR ===================
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DAYS = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+function renderCalendar() {
+  const { calYear: y, calMonth: m } = STATE;
+  document.getElementById('cal-title').textContent = MONTHS[m] + ' ' + y;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+  const first = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < first; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(y, m, d);
+    const isPast = date < today;
+    const isToday = date.getTime() === today.getTime();
+    const dow = date.getDay();
+    const isClosed = !SCHEDULE[dow] || SCHEDULE[dow].length === 0;
+    const disabled = (isPast && !isToday) || isClosed;
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sel = STATE.date === dateStr ? 'selected' : '';
+    const tod = isToday ? 'today' : '';
+    const dis = disabled ? 'disabled' : '';
+    const title = isClosed ? 'title="Cerrado"' : '';
+    grid.innerHTML += `<div class="cal-day ${sel} ${tod} ${dis}" ${!disabled ? `onclick="selectDate('${dateStr}',this)"` : ''} ${title}>${d}</div>`;
+  }
+}
+
+function selectDate(dateStr, el) {
+  STATE.date = dateStr; STATE.time = null;
+  document.getElementById('btn-paso2').disabled = true;
+  document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+  const d = new Date(dateStr + 'T12:00:00');
+  const label = d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long'});
+  document.getElementById('slots-date-label').textContent = label.charAt(0).toUpperCase() + label.slice(1);
+  document.getElementById('slots-card').style.display = 'block';
+  loadSlots(dateStr);
+}
+
+async function loadSlots(dateStr) {
+  const cont = document.getElementById('slots-container');
+  cont.innerHTML = `<div class="slots-placeholder"><div style="display:inline-block;width:20px;height:20px;border:2px solid #c4b5fd;border-top-color:var(--purple);border-radius:50%;animation:spin .6s linear infinite"></div><br/>Cargando horarios...</div>`;
+  document.getElementById('no-admin-slots').style.display = 'none';
+
+  // Horario fijo según día de semana
+  const dow = new Date(dateStr + 'T12:00:00').getDay();
+  const scheduleSlots = SCHEDULE[dow] || [];
+
+  if (scheduleSlots.length === 0) {
+    cont.innerHTML = '';
+    document.getElementById('no-admin-slots').style.display = 'block';
+    return;
+  }
+
+  // Partir desde el horario fijo, marcar los reservados y aplicar overrides admin
+  const localBooked = getLocalBookedSlots(dateStr);
+  // Incluir también horas extra habilitadas por admin fuera del schedule
+  const ov = getAdminOverrides()[dateStr] || {};
+  const scheduleTimes = scheduleSlots.map(s => s.time);
+  const extraTimes = Object.keys(ov).filter(t => ov[t] && !scheduleTimes.includes(t));
+  const allSlots = [
+    ...scheduleSlots,
+    ...extraTimes.map(time => ({time, tipo:'consulta'}))
+  ].sort((a, b) => a.time.localeCompare(b.time));
+  let slots = allSlots.map(slot => ({
+    ...slot,
+    available: !localBooked.includes(slot.time) && isSlotActive(dateStr, slot.time)
+  }));
+
+  // En producción, consultar también la disponibilidad central de Netlify.
+  if (location.hostname !== 'localhost') {
+    try {
+      const res = await fetch(`/.netlify/functions/slots?date=${dateStr}`);
+      if (res.ok) {
+        const data = await res.json();
+        const remoteSlots = new Map((data.slots || []).map(slot => [slot.time, slot]));
+        slots = slots.map(slot => ({
+          ...slot,
+          available: slot.available && (remoteSlots.get(slot.time)?.available ?? false)
+        }));
+      }
+    } catch(e) {
+      cont.innerHTML = `<div class="slots-placeholder">No pudimos cargar la disponibilidad en línea. Intenta nuevamente.</div>`;
+      return;
+    }
+  }
+
+  renderSlots(slots, dateStr);
+}
+
+function renderSlots(slots, dateStr) {
+  const cont = document.getElementById('slots-container');
+  if (!slots || !slots.length) {
+    cont.innerHTML = `<div class="slots-placeholder">😔 No hay horarios disponibles para este día.</div>`;
+    return;
+  }
+  let html = '<div class="slots-grid">';
+  slots.forEach(s => {
+    const time = typeof s === 'string' ? s : s.time;
+    const tipo = typeof s === 'string' ? 'consulta' : s.tipo;
+    const avail = typeof s === 'string' ? true : s.available;
+    const sel = STATE.time === time ? 'selected' : '';
+    const cls = avail ? sel : 'taken';
+    const tipoLabel = tipo === 'domicilio' ? 'Domicilio' : 'Box';
+    html += `<div class="slot ${cls}" ${avail ? `onclick="selectSlot('${time}','${tipo}',this)"` : 'title="Ocupado"'}>${time}<span class="slot-type">${tipoLabel}</span></div>`;
+  });
+  html += '</div>';
+  cont.innerHTML = html;
+}
+
+function selectSlot(time, tipo, el) {
+  STATE.time = time;
+  setTipo(tipo);
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-paso2').disabled = false;
+}
+
+function prevMonth() {
+  if (STATE.calMonth === 0) { STATE.calMonth = 11; STATE.calYear--; }
+  else STATE.calMonth--;
+  renderCalendar();
+}
+function nextMonth() {
+  if (STATE.calMonth === 11) { STATE.calMonth = 0; STATE.calYear++; }
+  else STATE.calMonth++;
+  renderCalendar();
+}
+
+// =================== CONFIRM SUMMARY ===================
+function renderConfirmSummary() {
+  if (STATE.tipo === 'domicilio' && !document.getElementById('f-direccion').value.trim()) {
+    alert('Para confirmar una atención a domicilio, completa la dirección del paciente.');
+    goBookStep(1);
+    document.getElementById('f-direccion').focus();
+    return;
+  }
+  const d = new Date(STATE.date + 'T12:00:00');
+  const dateLabel = d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const nombre = document.getElementById('f-nombre').value + ' ' + document.getElementById('f-apellido').value;
+  const motivo = document.getElementById('f-motivo').value;
+  const tipo = STATE.tipo === 'domicilio' ? '🏠 Domicilio (+$3.000)' : '🏥 Box (Justo de la Rivera #049)';
+  document.getElementById('confirm-summary').innerHTML = `
+    <div class="sd-row"><span>👤</span><span><strong>Paciente:</strong> ${nombre}, ${document.getElementById('f-edad').value}</span></div>
+    <div class="sd-row"><span>📅</span><span><strong>Fecha:</strong> ${dateLabel.charAt(0).toUpperCase()+dateLabel.slice(1)}</span></div>
+    <div class="sd-row"><span>🕐</span><span><strong>Hora:</strong> ${STATE.time} hrs</span></div>
+    <div class="sd-row"><span>📋</span><span><strong>Motivo:</strong> ${motivo}</span></div>
+    <div class="sd-row"><span>🏠</span><span><strong>Tipo:</strong> ${tipo}</span></div>
+    <div class="sd-row"><span>📱</span><span><strong>Celular:</strong> ${document.getElementById('f-celular').value}</span></div>
+    <div class="sd-row"><span>✉️</span><span><strong>Confirmación a:</strong> ${document.getElementById('f-email').value}</span></div>
+  `;
+}
+
+// =================== SUBMIT ===================
+function saveBookingLocal(payload) {
+  try {
+    const existing = JSON.parse(localStorage.getItem('camila_bookings') || '[]');
+    existing.push(payload);
+    localStorage.setItem('camila_bookings', JSON.stringify(existing));
+    // Marcar el slot como ocupado en el calendario local
+    const booked = JSON.parse(localStorage.getItem('camila_booked_slots') || '{}');
+    if (!booked[payload.date]) booked[payload.date] = [];
+    if (!booked[payload.date].includes(payload.time)) booked[payload.date].push(payload.time);
+    localStorage.setItem('camila_booked_slots', JSON.stringify(booked));
+  } catch(e) {}
+}
+
+function getLocalBookedSlots(dateStr) {
+  try {
+    const booked = JSON.parse(localStorage.getItem('camila_booked_slots') || '{}');
+    return booked[dateStr] || [];
+  } catch(e) { return []; }
+}
+
+function buildWhatsAppMsg(data) {
+  const d = new Date(data.date + 'T12:00:00');
+  const dateLabel = d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const tipo = data.tipo === 'domicilio' ? `Domicilio: ${data.direccion}` : 'Local (Justo de la Rivera #049)';
+  const msg = `Hola Camila, quiero reservar una hora:\n\n👤 Paciente: ${data.nombre} ${data.apellido}, ${data.edad}\n📅 Fecha: ${dateLabel}\n🕐 Hora: ${data.time} hrs\n📋 Motivo: ${data.motivo}\n🏠 Tipo: ${tipo}\n📱 Celular: ${data.celular}\n✉️ Email: ${data.email}${data.comentario ? '\n💬 ' + data.comentario : ''}`;
+  return `https://wa.me/56998983553?text=${encodeURIComponent(msg)}`;
+}
+
+async function submitBooking() {
+  if (STATE.submitting) return;
+  STATE.submitting = true;
+  const btn = document.getElementById('btn-confirmar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
+  const payload = {
+    nombre: document.getElementById('f-nombre').value.trim(),
+    apellido: document.getElementById('f-apellido').value.trim(),
+    edad: document.getElementById('f-edad').value.trim(),
+    celular: document.getElementById('f-celular').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    relacion: document.getElementById('f-relacion').value,
+    motivo: document.getElementById('f-motivo').value,
+    tipo: STATE.tipo,
+    direccion: document.getElementById('f-direccion').value.trim(),
+    comentario: document.getElementById('f-comentario').value.trim(),
+    date: STATE.date,
+    time: STATE.time,
+    notifyEmail: NOTIFY_EMAIL,
+    timestamp: new Date().toISOString()
+  };
+
+  // En producción, reservar primero en el servidor para evitar dobles reservas.
+  if (location.hostname !== 'localhost') {
+    try {
+      const reserveRes = await fetch('/.netlify/functions/reserve', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ date: payload.date, time: payload.time })
+      });
+      if (reserveRes.status === 409) {
+        alert('Ese horario acaba de ser reservado por otra persona. Elige otra hora.');
+        STATE.submitting = false;
+        btn.disabled = false;
+        btn.innerHTML = '✅ Confirmar reserva';
+        loadSlots(payload.date);
+        goBookStep(2);
+        return;
+      }
+      if (!reserveRes.ok) throw new Error('reserve_failed');
+    } catch(e) {
+      alert('No pudimos confirmar la reserva en línea. Intenta nuevamente en unos minutos.');
+      STATE.submitting = false;
+      btn.disabled = false;
+      btn.innerHTML = '✅ Confirmar reserva';
+      return;
+    }
+  }
+
+  // Guardar en localStorage como respaldo visual del dispositivo actual
+  saveBookingLocal(payload);
+
+  // Enviar emails via EmailJS
+  await sendEmails(payload);
+
+  STATE.submitting = false;
+  showSuccess(payload);
+}
+
+async function sendEmails(data) {
+  if (typeof emailjs === 'undefined' || EJS_PUBLIC_KEY === 'TU_PUBLIC_KEY') return;
+  const d = new Date(data.date + 'T12:00:00');
+  const dateLabel = d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const tipo = data.tipo === 'domicilio' ? `A domicilio — ${data.direccion}` : 'Consulta en el local (Justo de la Rivera #049)';
+  const params = {
+    paciente_nombre: `${data.nombre} ${data.apellido}`,
+    paciente_edad:   data.edad,
+    fecha:           dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1),
+    hora:            data.time + ' hrs',
+    motivo:          data.motivo,
+    tipo_atencion:   tipo,
+    celular:         data.celular,
+    email_cliente:   data.email,
+    comentario:      data.comentario || '—',
+    email_camila:    NOTIFY_EMAIL,
+    wa_link:         buildWhatsAppMsg(data),
+    screening:       STATE.testResult || '(El paciente no completó el test de screening)'
+  };
+  try {
+    // Email al cliente (sin resultado del test)
+    await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_CLIENTE, { ...params, to_email: data.email });
+    // Email a Camila (con resultado del test incluido en comentario)
+    const paramsConTest = { ...params, comentario: params.comentario + '\n\n' + params.screening };
+    await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_CAMILA,  { ...paramsConTest, to_email: NOTIFY_EMAIL });
+  } catch(e) {
+    console.warn('EmailJS error:', e);
+  }
+}
+
+function showSuccess(data) {
+  const d = new Date(data.date + 'T12:00:00');
+  const dateLabel = d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  const tipo = data.tipo === 'domicilio' ? '🏠 Domicilio' : '🏥 Local';
+  document.getElementById('success-details').innerHTML = `
+    <div class="sd-row"><span>📋</span><span><strong>Motivo:</strong> ${data.motivo}</span></div>
+    <div class="sd-row"><span>📅</span><span><strong>Fecha:</strong> ${dateLabel.charAt(0).toUpperCase()+dateLabel.slice(1)}</span></div>
+    <div class="sd-row"><span>🕐</span><span><strong>Hora:</strong> ${data.time} hrs</span></div>
+    <div class="sd-row"><span>👤</span><span><strong>Paciente:</strong> ${data.nombre} ${data.apellido}</span></div>
+    <div class="sd-row"><span>🏠</span><span><strong>Atención:</strong> ${tipo}</span></div>
+  `;
+  goBookStep(4);
+}
+
+function startOver() {
+  STATE.date = null; STATE.time = null; STATE.tipo = 'consulta'; STATE.submitting = false;
+  ['f-nombre','f-apellido','f-edad','f-celular','f-email','f-direccion','f-comentario'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-motivo').value = '';
+  document.getElementById('btn-confirmar').innerHTML = '✅ Confirmar reserva';
+  document.getElementById('btn-confirmar').disabled = false;
+  document.getElementById('slots-card').style.display = 'none';
+  document.getElementById('btn-paso1').disabled = true;
+  setTipo('consulta');
+  goBookStep(1);
+}
+
+// =================== TEST ===================
+const TEST_DOMAINS = [
+  {id:'tar', name:'Articulación', test:'TAR', icon:'🗣️',
+   questions:[
+    {id:'tar1',text:'¿Su hijo/a tiene dificultad para pronunciar ciertos sonidos? (ej: "r", "s", "l", "ch")',opts:['No, pronuncia bien todos','A veces, en palabras difíciles','Sí, con varios sonidos','Sí, con muchos sonidos'],scores:[0,1,2,3]},
+    {id:'tar2',text:'¿Las personas que no conocen a su hijo/a lo entienden cuando habla?',opts:['Siempre lo entienden','La mayoría de las veces','A veces tienen dificultad','Ocasionalmente / muy difícil'],scores:[0,1,2,3]},
+    {id:'tar3',text:'¿Su hijo/a omite sonidos al final de palabras? (ej: "perro" → "pero")',opts:['No, dice palabras completas','Ocasionalmente','A veces sí','Frecuentemente'],scores:[0,1,2,3]}
+  ]},
+  {id:'teprosif', name:'Fonología', test:'TEPROSIF-R', icon:'🔤',
+   questions:[
+    {id:'tep1',text:'¿Su hijo/a simplifica palabras? (ej: "elefante" → "efante")',opts:['No, dice bien las palabras','Ocasionalmente','A veces, con varias','Frecuentemente'],scores:[0,1,2,3]},
+    {id:'tep2',text:'¿Su hijo/a sustituye sonidos? (ej: "tato" por "gato", "pata" por "bata")',opts:['No','Con alguna palabra','Con bastantes','Con muchas palabras'],scores:[0,1,2,3]},
+    {id:'tep3',text:'¿Tiene dificultad con grupos de consonantes? (ej: "plato", "fruta", "brazo")',opts:['No, los dice bien','A veces le cuesta','Frecuentemente','Siempre los simplifica'],scores:[0,1,2,3]}
+  ]},
+  {id:'stsg', name:'Gramática', test:'STSG', icon:'📝',
+   questions:[
+    {id:'stsg1',text:'¿Su hijo/a usa oraciones completas al comunicarse?',opts:['Siempre oraciones completas','La mayoría del tiempo','A veces, usa palabras sueltas','Principalmente palabras sueltas'],scores:[0,1,2,3]},
+    {id:'stsg2',text:'¿Comete errores de gramática? (ej: "yo fue", "la niño", "ellos está")',opts:['No, habla correctamente','Ocasionalmente','A veces sí','Frecuentemente'],scores:[0,1,2,3]},
+    {id:'stsg3',text:'¿Usa correctamente los pronombres? (él/ella, lo/la, me/te/se)',opts:['Siempre bien','Casi siempre','A veces los confunde','Frecuentemente confunde'],scores:[0,1,2,3]}
+  ]},
+  {id:'tecal', name:'Comprensión del Lenguaje', test:'TECAL', icon:'👂',
+   questions:[
+    {id:'tec1',text:'¿Comprende instrucciones de 2 o más pasos? (ej: "ve a tu pieza y trae tu mochila")',opts:['Siempre entiende bien','La mayoría del tiempo','A veces necesita repetición','Frecuentemente no comprende'],scores:[0,1,2,3]},
+    {id:'tec2',text:'¿Tiene un vocabulario amplio para su edad?',opts:['Sí, vocabulario amplio','Normal para su edad','Un poco limitado','Bastante limitado'],scores:[0,1,2,3]},
+    {id:'tec3',text:'¿Puede contar lo que pasó en el día o narrar un cuento?',opts:['Sí, lo hace bien','Con algunas dificultades','Con bastantes dificultades','No puede hacerlo'],scores:[0,1,2,3]}
+  ]}
+];
+const ALL_TEST_Qs = TEST_DOMAINS.flatMap(d => d.questions);
+const testAnswers = {};
+
+function renderTestV2() {
+  const container = document.getElementById('test-questions-v2');
+  let qNum = 0;
+  container.innerHTML = `
+    <div style="background:var(--purple-light);border-radius:8px;padding:10px 12px;margin-bottom:16px;font-size:0.78rem;color:var(--purple-dark)">
+      <strong>👨‍👩‍👧 Para padres/cuidadores.</strong> Responda según el comportamiento habitual de su hijo/a.
+      Si es para un adulto, responda en primera persona.
+    </div>
+    ${TEST_DOMAINS.map(domain => `
+      <div class="test-domain">
+        <div class="test-domain-header">${domain.icon} ${domain.name} <span style="font-weight:400;color:#6b7280;font-size:0.73rem">— ${domain.test}</span></div>
+        ${domain.questions.map(q => {
+          qNum++;
+          return `
+          <div class="test-q" id="vtq-${q.id}">
+            <div class="q-text">${qNum}. ${q.text}</div>
+            <div class="q-opts">
+              ${q.opts.map((opt,j) => `
+                <label class="q-opt ${testAnswers[q.id]===j?'selected':''}" onclick="answerTestQ('${q.id}',${j},this)">
+                  <input type="radio" name="v${q.id}" value="${j}"/> ${opt}
+                </label>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    `).join('')}`;
+  calcTestV2();
+}
+
+function answerTestQ(qId, val, el) {
+  testAnswers[qId] = val;
+  el.closest('.q-opts').querySelectorAll('.q-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  calcTestV2();
+}
+
+function calcTestV2() {
+  const answered = Object.keys(testAnswers).length;
+  document.getElementById('btn-ver-resultado').disabled = answered < ALL_TEST_Qs.length;
+  if (answered === ALL_TEST_Qs.length) showFullResult();
+}
+
+function buildTestResultText(domainResults) {
+  const recommended = domainResults.filter(d => d.score > 5).map(d => d.test);
+  const monitor = domainResults.filter(d => d.score > 2 && d.score <= 5).map(d => d.test);
+  const completedAt = new Date().toLocaleString('es-CL');
+  let lines = [
+    '=== REPORTE DE TEST DE EVALUACIÓN DEL LENGUAJE ===',
+    `Fecha de envío: ${completedAt}`,
+    ''
+  ];
+
+  lines.push('--- RESPUESTAS ---');
+  TEST_DOMAINS.forEach(domain => {
+    lines.push(`${domain.name} (${domain.test})`);
+    domain.questions.forEach((q, index) => {
+      const answerIndex = testAnswers[q.id];
+      const answerText = q.opts[answerIndex] ?? 'Sin respuesta';
+      lines.push(`${index + 1}. ${q.text}`);
+      lines.push(`   Respuesta: ${answerText}`);
+    });
+    lines.push('');
+  });
+
+  lines.push('--- RESULTADO POR ÁREA ---');
+  domainResults.forEach(d => {
+    lines.push(`${d.icon} ${d.name} (${d.test}): ${d.level} [puntaje: ${d.score}]`);
+  });
+  lines.push('');
+  if (recommended.length > 0)
+    lines.push(`🔴 Tests clínicos recomendados: ${recommended.join(' + ')}`);
+  else if (monitor.length > 0)
+    lines.push(`🟡 Áreas a monitorear: ${monitor.join(', ')}`);
+  else
+    lines.push('🟢 Sin indicadores significativos de dificultad');
+  return lines.join('\n');
+}
+
+function showFullResult() {
+  const domainResults = TEST_DOMAINS.map(domain => {
+    const score = domain.questions.reduce((s, q) => s + (q.scores[testAnswers[q.id]] || 0), 0);
+    let level, icon;
+    if (score <= 2) { level='Sin indicadores'; icon='🟢'; }
+    else if (score <= 5) { level='A monitorear'; icon='🟡'; }
+    else { level='Evaluación recomendada'; icon='🔴'; }
+    return {...domain, score, level, icon};
+  });
+
+  // Guardar resultado en STATE para adjuntarlo al email de Camila al reservar
+  STATE.testResult = buildTestResultText(domainResults);
+
+  // Enviar resultado a Camila inmediatamente (aunque no reserve)
+  if (!STATE.testReportSent) {
+    sendTestResultToCamila(STATE.testResult);
+    STATE.testReportSent = true;
+  }
+
+  // Mostrar al paciente solo un mensaje de agradecimiento — sin resultados
+  const resultEl = document.getElementById('test-result-v2');
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = `
+    <div class="test-result-box" style="text-align:center;padding:20px">
+      <div style="font-size:2rem;margin-bottom:10px">✅</div>
+      <div style="font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:8px">¡Gracias por completar el cuestionario!</div>
+      <p style="font-size:0.82rem;color:var(--gray);margin-bottom:16px">
+        Camila Velásquez revisará tus respuestas antes de la consulta.<br/>
+        Los resultados son de uso clínico exclusivo.
+      </p>
+      <button class="btn-primary" onclick="showTab('agenda'); window.scrollTo({top:200, behavior:'smooth'})" style="max-width:260px;font-size:0.85rem;padding:11px;margin:0 auto">
+        📅 Agendar consulta con Camila →
+      </button>
+    </div>`;
+  document.getElementById('btn-ver-resultado').style.display = 'none';
+}
+
+async function sendTestResultToCamila(resultText) {
+  if (typeof emailjs === 'undefined' || EJS_PUBLIC_KEY === 'TU_PUBLIC_KEY') return;
+  try {
+    const nombre = document.getElementById('f-nombre')?.value.trim();
+    const apellido = document.getElementById('f-apellido')?.value.trim();
+    const edad = document.getElementById('f-edad')?.value.trim();
+    const celular = document.getElementById('f-celular')?.value.trim();
+    const emailCliente = document.getElementById('f-email')?.value.trim();
+    const pacienteNombre = [nombre, apellido].filter(Boolean).join(' ') || '(Screening sin reserva aún)';
+    await emailjs.send(EJS_SERVICE_ID, EJS_TEMPLATE_CAMILA, {
+      to_email: NOTIFY_EMAIL,
+      paciente_nombre: pacienteNombre,
+      paciente_edad: edad || '—',
+      fecha: '—',
+      hora: '—',
+      motivo: '—',
+      tipo_atencion: '—',
+      celular: celular || '—',
+      email_cliente: emailCliente || '—',
+      comentario: resultText,
+      wa_link: ''
+    });
+  } catch(e) { console.warn('EmailJS test result error:', e); }
+}
+
+// =================== ADMIN ===================
+function toggleAdmin() {
+  const w = document.getElementById('admin-wrapper');
+  w.style.display = w.style.display === 'none' ? 'block' : 'none';
+  if (w.style.display === 'block') {
+    w.scrollIntoView({behavior:'smooth'});
+    renderAdminCal();
+  }
+}
+
+function checkPin() {
+  document.getElementById('btn-admin-login').disabled = document.getElementById('admin-pin-input').value.length < 4;
+}
+
+function adminLogin() {
+  const pin = document.getElementById('admin-pin-input').value;
+  if (pin === ADMIN_PIN) {
+    document.getElementById('admin-pin-section').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    renderAdminCal();
+    renderMonthlyReport();
+  } else {
+    document.getElementById('admin-pin-error').style.display = 'block';
+  }
+}
+
+function renderAdminCal() {
+  const { adminYear: y, adminMonth: m } = STATE;
+  document.getElementById('admin-cal-title').textContent = MONTHS[m] + ' ' + y;
+  const grid = document.getElementById('admin-cal-grid');
+  grid.innerHTML = DAYS.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+  const first = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < first; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const date = new Date(y, m, d);
+    const isPast = date < today;
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const sel = STATE.adminDate === dateStr ? 'selected' : '';
+    const dis = isPast ? 'disabled' : '';
+    grid.innerHTML += `<div class="cal-day ${sel} ${dis}" ${!isPast ? `onclick="adminSelectDate('${dateStr}',this)"` : ''}>${d}</div>`;
+  }
+}
+
+function adminPrevMonth() {
+  if (STATE.adminMonth === 0) { STATE.adminMonth = 11; STATE.adminYear--; }
+  else STATE.adminMonth--;
+  renderAdminCal();
+}
+function adminNextMonth() {
+  if (STATE.adminMonth === 11) { STATE.adminMonth = 0; STATE.adminYear++; }
+  else STATE.adminMonth++;
+  renderAdminCal();
+}
+
+// ======= ADMIN: sistema de overrides por fecha =======
+// Genera todos los horarios de 08:00 a 20:00 cada 30 min
+const ALL_ADMIN_TIMES = (function() {
+  const t = [];
+  for (let h = 8; h <= 20; h++) {
+    t.push(`${String(h).padStart(2,'0')}:00`);
+    if (h < 20) t.push(`${String(h).padStart(2,'0')}:30`);
+  }
+  return t;
+})();
+
+function getAdminOverrides() {
+  try { return JSON.parse(localStorage.getItem('camila_admin_overrides') || '{}'); } catch(e) { return {}; }
+}
+function saveAdminOverrides(o) {
+  try { localStorage.setItem('camila_admin_overrides', JSON.stringify(o)); } catch(e) {}
+}
+// Devuelve true si el slot está activo para un día/hora (respetando overrides)
+function isSlotActive(dateStr, time) {
+  const dow = new Date(dateStr + 'T12:00:00').getDay();
+  const inSchedule = (SCHEDULE[dow] || []).some(slot => slot.time === time);
+  const ov = getAdminOverrides();
+  const dateOv = ov[dateStr] || {};
+  return (time in dateOv) ? dateOv[time] : inSchedule;
+}
+// Mantener compatibilidad con loadSlots de pacientes
+function getAdminBlocked() { return {}; }
+
+function adminSelectDate(dateStr, el) {
+  STATE.adminDate = dateStr;
+  document.querySelectorAll('#admin-cal-grid .cal-day').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+  const d = new Date(dateStr + 'T12:00:00');
+  const label = d.toLocaleDateString('es-CL', {weekday:'long', day:'numeric', month:'long'});
+  document.getElementById('admin-date-label').textContent = label;
+  document.getElementById('admin-slots-section').style.display = 'block';
+  loadAdminSlots(dateStr);
+  loadDayCitas(dateStr);
+}
+
+function loadAdminSlots(dateStr) {
+  const grid = document.getElementById('admin-slot-grid');
+  const bookedSet = new Set(getLocalBookedSlots(dateStr));
+  const dow = new Date(dateStr + 'T12:00:00').getDay();
+
+  grid.innerHTML = ALL_ADMIN_TIMES.map(t => {
+    if (bookedSet.has(t))
+      return `<div class="admin-slot" style="cursor:not-allowed;background:#fef2f2;border-color:#fecaca;color:#dc2626;font-size:0.78rem;padding:8px 4px">
+        ${t}<br><span style="font-size:0.63rem">📅 Reservado</span></div>`;
+    const active = isSlotActive(dateStr, t);
+    const inSchedule = (SCHEDULE[dow] || []).some(slot => slot.time === t);
+    const label = active ? '✅ Activo' : '—';
+    const cls = active ? 'available' : 'blocked';
+    const hint = !inSchedule && active ? ' style="border-color:#7c3aed;background:#faf5ff"' : '';
+    return `<div class="admin-slot ${cls}" onclick="toggleAdminSlot('${t}',this,'${dateStr}')"${hint}>
+      ${t}<br><span style="font-size:0.63rem">${label}</span></div>`;
+  }).join('');
+}
+
+function toggleAdminSlot(time, el, dateStr) {
+  const current = isSlotActive(dateStr, time);
+  const dow = new Date(dateStr + 'T12:00:00').getDay();
+  const inSchedule = (SCHEDULE[dow] || []).some(slot => slot.time === time);
+  const newState = !current;
+  const ov = getAdminOverrides();
+  if (!ov[dateStr]) ov[dateStr] = {};
+  if (newState === inSchedule) {
+    delete ov[dateStr][time]; // vuelve al default → eliminar override
+    if (Object.keys(ov[dateStr]).length === 0) delete ov[dateStr];
+  } else {
+    ov[dateStr][time] = newState;
+  }
+  saveAdminOverrides(ov);
+  // Actualizar visual
+  if (newState) {
+    el.className = 'admin-slot available';
+    el.style.borderColor = inSchedule ? '' : '#7c3aed';
+    el.style.background = inSchedule ? '' : '#faf5ff';
+    el.innerHTML = time + '<br><span style="font-size:0.63rem">✅ Activo</span>';
+  } else {
+    el.className = 'admin-slot blocked';
+    el.style.borderColor = ''; el.style.background = '';
+    el.innerHTML = time + '<br><span style="font-size:0.63rem">—</span>';
+  }
+}
+
+function saveAdminSlots() {
+  const btn = document.getElementById('btn-save-slots');
+  btn.disabled = true; btn.innerHTML = '✅ Guardado';
+  document.getElementById('admin-save-msg').style.display = 'block';
+  setTimeout(() => {
+    btn.disabled = false; btn.innerHTML = '💾 Guardar disponibilidad';
+    document.getElementById('admin-save-msg').style.display = 'none';
+  }, 2000);
+}
+
+// =================== ASISTENCIA ===================
+function getAttendance() {
+  try { return JSON.parse(localStorage.getItem('camila_attendance') || '{}'); } catch(e) { return {}; }
+}
+function saveAttendance(a) {
+  try { localStorage.setItem('camila_attendance', JSON.stringify(a)); } catch(e) {}
+}
+function attendanceKey(dateStr, time) { return `${dateStr}_${time}`; }
+
+function markAttendance(dateStr, time, status, rowEl) {
+  const a = getAttendance();
+  const key = attendanceKey(dateStr, time);
+  a[key] = a[key] === status ? 'pending' : status; // toggle
+  saveAttendance(a);
+  renderCitaRow(rowEl, dateStr, time);
+  renderMonthlyReport();
+}
+
+function renderCitaRow(rowEl, dateStr, time) {
+  const bookings = JSON.parse(localStorage.getItem('camila_bookings') || '[]');
+  const b = bookings.find(x => x.date === dateStr && x.time === time);
+  if (!b) return;
+  const a = getAttendance();
+  const status = a[attendanceKey(dateStr, time)] || 'pending';
+  rowEl.className = 'cita-row' + (status === 'attended' ? ' asistio' : status === 'noshow' ? ' noshow' : '');
+  rowEl.innerHTML = `
+    <div class="cita-time">${b.time}</div>
+    <div class="cita-info">
+      <div class="cita-name">👤 ${b.nombre} ${b.apellido} · ${b.edad}</div>
+      <div class="cita-motivo">📋 ${b.motivo} · ${b.tipo === 'domicilio' ? '🏠 Domicilio' : '🏥 Local'}</div>
+      <div class="cita-motivo">📱 ${b.celular}</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="btn-asistio ${status==='attended'?'active':''}"
+        onclick="markAttendance('${dateStr}','${time}','attended',this.closest('.cita-row'))">✅ Asistió</button>
+      <button class="btn-noshow ${status==='noshow'?'active':''}"
+        onclick="markAttendance('${dateStr}','${time}','noshow',this.closest('.cita-row'))">❌ No asistió</button>
+    </div>`;
+}
+
+function loadDayCitas(dateStr) {
+  const bookings = JSON.parse(localStorage.getItem('camila_bookings') || '[]');
+  const dayCitas = bookings.filter(b => b.date === dateStr).sort((a,b) => a.time.localeCompare(b.time));
+  const section = document.getElementById('admin-citas-section');
+  const list = document.getElementById('admin-citas-list');
+  if (!dayCitas.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  dayCitas.forEach(b => {
+    const row = document.createElement('div');
+    list.appendChild(row);
+    renderCitaRow(row, dateStr, b.time);
+  });
+}
+
+function renderMonthlyReport() {
+  const resumen = document.getElementById('admin-resumen');
+  const bookings = JSON.parse(localStorage.getItem('camila_bookings') || '[]');
+  const attendance = getAttendance();
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30); cutoff.setHours(0,0,0,0);
+
+  const recent = bookings.filter(b => new Date(b.date + 'T12:00:00') >= cutoff);
+  if (!recent.length) { resumen.style.display = 'none'; return; }
+
+  resumen.style.display = 'block';
+  const total    = recent.length;
+  const attended = recent.filter(b => attendance[attendanceKey(b.date, b.time)] === 'attended').length;
+  const noshow   = recent.filter(b => attendance[attendanceKey(b.date, b.time)] === 'noshow').length;
+  const pending  = total - attended - noshow;
+  const pct = total > 0 ? Math.round((attended/total)*100) : 0;
+
+  document.getElementById('admin-stats-grid').innerHTML = `
+    <div class="stat-box" style="border-color:#86efac">
+      <div class="stat-n" style="color:#16a34a">${attended}</div>
+      <div class="stat-l">✅ Asistieron</div>
+    </div>
+    <div class="stat-box" style="border-color:#fca5a5">
+      <div class="stat-n" style="color:#dc2626">${noshow}</div>
+      <div class="stat-l">❌ No asistieron</div>
+    </div>
+    <div class="stat-box" style="border-color:#fcd34d">
+      <div class="stat-n" style="color:#d97706">${pending}</div>
+      <div class="stat-l">⏳ Sin confirmar</div>
+    </div>
+    <div class="stat-box" style="border-color:#c4b5fd">
+      <div class="stat-n" style="color:#7c3aed">${pct}%</div>
+      <div class="stat-l">📊 Tasa asistencia</div>
+    </div>`;
+
+  // Lista detallada por mes
+  const byMonth = {};
+  recent.forEach(b => {
+    const mes = b.date.slice(0,7);
+    if (!byMonth[mes]) byMonth[mes] = {total:0,attended:0,noshow:0};
+    byMonth[mes].total++;
+    const s = attendance[attendanceKey(b.date, b.time)];
+    if (s === 'attended') byMonth[mes].attended++;
+    if (s === 'noshow')   byMonth[mes].noshow++;
+  });
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('admin-stats-list').innerHTML = Object.entries(byMonth).sort().reverse().map(([ym, d]) => {
+    const [y,m] = ym.split('-');
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:white;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;font-size:0.8rem">
+      <strong>${meses[parseInt(m)-1]} ${y}</strong>
+      <span>📅 ${d.total} citas &nbsp;·&nbsp; ✅ ${d.attended} &nbsp;·&nbsp; ❌ ${d.noshow} &nbsp;·&nbsp; ⏳ ${d.total-d.attended-d.noshow}</span>
+    </div>`;
+  }).join('');
+}
+
+// =================== ACCESO SECRETO ADMIN ===================
+let _secretClicks = 0, _secretTimer = null;
+function secretClick() {
+  _secretClicks++;
+  clearTimeout(_secretTimer);
+  _secretTimer = setTimeout(() => { _secretClicks = 0; }, 1500);
+  if (_secretClicks >= 5) {
+    _secretClicks = 0;
+    toggleAdmin();
+  }
+}
+
+// =================== INIT ===================
+renderCalendar();
+renderTestV2();
+</script>
+</body>
+</html>
